@@ -88,6 +88,7 @@ public class TinySEQueryProcess implements QueryProcess {
 					if(tree.root == null)
 						tree.root = node;
 					else {
+						
 						QueryPlanNode newnode = tree.new QueryPlanNode();
 						newnode.left = tree.root;
 						newnode.right = node;
@@ -107,7 +108,7 @@ public class TinySEQueryProcess implements QueryProcess {
 			else {
 				temp += queryArray[i];
 				
-				if(i == query.length()-1) {
+				if(i == query.length()-1 && temp.length() > 0) {
 					QueryPlanNode node = tree.new QueryPlanNode();
 					node.left = tree.new QueryPlanNode();
 					node.left.termid = Integer.parseInt(temp);
@@ -115,9 +116,18 @@ public class TinySEQueryProcess implements QueryProcess {
 					node.type = NODE_TYPE.OP_REMOVE_POS;
 					
 					if(tree.root == null)
-						tree.root = node;
-					else tree.root.right = node;
-
+					{  tree.root = node; }
+					else if(tree.root.left != null && tree.root.right == null && tree.root.type == NODE_TYPE.OP_AND) {
+						tree.root.right = node;
+					}
+					else {
+						
+						QueryPlanNode newnode = tree.new QueryPlanNode();
+						newnode.left = tree.root;
+						newnode.right = node;
+						newnode.type = NODE_TYPE.OP_AND;
+						tree.root = newnode;
+					}
 				}
 			}
 		}
@@ -130,10 +140,12 @@ public class TinySEQueryProcess implements QueryProcess {
 		if(node != null) {
 			System.out.println("\t" + node.type + ", " + node.termid + ", " + node.shift);
 			
-			if(node.left != null)
-				readTree(node.left);
-			if(node.right != null)
+			if(node.left != null) {
+					readTree(node.left);
+			}
+			if(node.right != null) {
 				readTree(node.right);
+			}
 		}
 		
 	}
@@ -203,6 +215,6 @@ public class TinySEQueryProcess implements QueryProcess {
 			else temp += queryArray[i];
 		}
 		
-		return retIndex - idx + 1;
+		return retIndex;
 	}
 }
