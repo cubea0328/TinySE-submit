@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 import edu.hanyang.submit.TinySEBPlusTree;
 
-// @Ignore("Delete this line to unit test stage 3")
+@Ignore("Delete this line to unit test stage 3")
 public class BPlusTreeTest {
 
 	/*
